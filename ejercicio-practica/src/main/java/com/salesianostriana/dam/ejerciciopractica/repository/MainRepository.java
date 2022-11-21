@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface MainRepository extends JpaRepository<Alumno, Long> {
-    Optional<Alumno> findFirstByCode(String code);
+    Optional<Alumno> findFirstById(Long id);
 }
