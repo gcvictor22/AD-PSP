@@ -1,0 +1,92 @@
+@DeleteMapping("/song/{id}")
+public ResponseEntity<Song> delete(@PathVariable Long id){
+
+    if(songService.existById(id)){
+
+        songService.deleteById(id);
+
+    }
+
+    return ResponseEntity.of(HttpStatus.NO_CONTENT).build();
+}
+
+-----------------------------------------------------------------
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public CustomerDto {
+
+    private Long id;
+    private String fullName, country, adress, zipCode;
+
+}
+
+@RequiredArgsContructor
+@Component
+public CustomerDtoConverter {
+
+    public CustomerDto (Customer c) {
+
+        return CustomerDto.builder()
+            .id(c.getId())
+            .fullName(c.getFirstname+" "+c.getLastname())
+            .country(c.getAddress().getCountry())
+            .adress(c.getAddress().getAdress())
+            .zipCode(c.getAddress().getZip_code)
+            .build();
+    }
+}
+
+
+
+
+@Operation(summary = "Bucar todas las canciones")
+@ApiResponses(value = {
+    @ApiResponse(
+        value = "200",
+        description = "Se han encontrado todas las canciones con éxito",
+        content = @Content(
+            mediaType = 'application/json',
+            objectValue = GetSongDto.class,
+            arry = @ArrySchema(
+
+                @ExampleObject(
+                """
+                    [
+                        {
+                            id: 1,
+                            atributo1 : "atributo1",
+                            atributo2 : "atributo2",
+                            atributo3 : 3
+                        },
+                        {
+                            id: 2,
+                            atributo1 : "atributo1",
+                            atributo2 : "atributo2",
+                            atributo3 : 3
+                        },
+                    ]
+                """
+            )
+            )
+        )
+    ),
+    @ApiResponse(
+        value = "404",
+        description = "No se ha encontrado ninguna canción",
+        content = @Content
+    )
+})
+
+@GetMapping(/song)
+public <List<Song>> findAll(){
+
+    if(songService.findAll().isEmpty){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    }else{
+        return ResponseEntity.ok(songService.findAll());
+    }
+
+}
