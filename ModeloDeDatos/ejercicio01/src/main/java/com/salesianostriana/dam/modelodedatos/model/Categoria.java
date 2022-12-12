@@ -28,7 +28,7 @@ public class Categoria {
 
 
     @ManyToOne
-    @JoinColumn(name = "categoria_id",
+    @JoinColumn(name = "categoria_padre_id",
             foreignKey = @ForeignKey(name = "FK_CATEGORIA_CATPADRE"))
     private Categoria catPadre;
 

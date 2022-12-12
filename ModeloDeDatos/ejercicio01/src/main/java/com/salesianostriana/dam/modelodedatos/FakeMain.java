@@ -49,12 +49,14 @@ public class FakeMain {
         List<Producto> auxList = List.of(p1, p2);
 
         p1.addToCategoria(c1);
-        p1.addToCategoria(c1);
+        p2.addToCategoria(c1);
 
-        c1.addToCatPadre(c2);
-
-        categoriaServicio.save(c1);
         productoServicio.saveAll(auxList);
+
+        c2.addToCatPadre(c1);
+
+        categoriaServicio.save(c2);
+
 
 
         categoriaServicio.findAll()
