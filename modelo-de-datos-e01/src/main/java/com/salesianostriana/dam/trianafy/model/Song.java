@@ -1,16 +1,17 @@
 package com.salesianostriana.dam.trianafy.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class Song {
 
@@ -23,13 +24,12 @@ public class Song {
     @Column(name = "year_of_song")
     private String year;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private Artist artist;
 
+    @OneToMany(mappedBy = "song")
+    @Builder.Default
+    @OrderColumn(name = "orden")
+    private List<AddedTo> addedTo = new ArrayList<>();
 
-    public Song(String title, String album, String year) {
-        this.title = title;
-        this.album = album;
-        this.year = year;
-    }
 }

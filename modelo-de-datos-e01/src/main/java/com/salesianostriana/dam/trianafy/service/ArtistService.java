@@ -2,10 +2,13 @@ package com.salesianostriana.dam.trianafy.service;
 
 
 import com.salesianostriana.dam.trianafy.model.Artist;
+import com.salesianostriana.dam.trianafy.model.Playlist;
 import com.salesianostriana.dam.trianafy.repos.ArtistRepository;
+import com.salesianostriana.dam.trianafy.repos.PlaylistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +17,7 @@ import java.util.Optional;
 public class ArtistService {
 
     private final ArtistRepository repository;
+    private final PlaylistRepository playlistRepository;
 
 
     public Artist add(Artist artist) {
@@ -46,6 +50,18 @@ public class ArtistService {
         }else{
             return false;
         }
+    }
+
+    public List<Playlist> findPlayLists(Artist a){
+
+        Optional<Artist> art = repository.findById(a.getId());
+        List<Playlist> aux = new ArrayList<>();
+
+        if (art.isPresent()){
+            aux = playlistRepository.findAllPlaylistFromArtist(art.get().getName());
+        }
+
+        return aux;
     }
 
 }
