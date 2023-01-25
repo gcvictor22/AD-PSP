@@ -27,8 +27,8 @@ public class ProductController {
 
     @GetMapping("/")
     public ResponseEntity<PageDto<ProductDto>> findAll(
-            @RequestParam(value = "search", defaultValue = "") String search,
-            @PageableDefault(size = 20, page = 0)Pageable pageable){
+            @RequestParam(value = "s", defaultValue = "") String search,
+            @PageableDefault(size = 25, page = 0)Pageable pageable){
 
         List<SearchCriteria> params = Extractor.extractSearchCriteriaList(search);
         PageDto<ProductDto> res = productService.search(params, pageable);

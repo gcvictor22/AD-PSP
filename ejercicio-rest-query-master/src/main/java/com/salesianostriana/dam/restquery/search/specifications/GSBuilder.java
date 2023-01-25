@@ -18,16 +18,15 @@ public class GSBuilder<T> {
 
     public Specification<T> build(){
         List<SearchCriteria> checkedParams = params.stream()
-                .filter(p -> QueryableEntity.checkQueryParams(type, p.getKey()))
-                .collect(Collectors.toList());
+                .filter(p -> QueryableEntity.checkQueryParams(type, p.getKey())).toList();
 
         if (checkedParams.isEmpty())
             return null;
 
         Specification<T> res = new GenericSpecification<T>(params.get(0));
 
-        for (int i = 0; i < params.size(); i++){
-            res = res.and(new GenericSpecification<T>(params.get(i)));
+        for (SearchCriteria param : params) {
+            res = res.and(new GenericSpecification<T>(param));
         }
 
         return res;

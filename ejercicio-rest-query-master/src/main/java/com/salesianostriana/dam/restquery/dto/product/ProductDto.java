@@ -12,14 +12,14 @@ import java.time.LocalDate;
 @Setter
 public class ProductDto {
 
-    private String name;
+    private String productName;
     private LocalDate releaseDate;
-    private Double price;
+    private double price;
     private boolean available;
 
     public static ProductDto of (Product p){
         return ProductDto.builder()
-                .name(p.getProductName())
+                .productName(p.getProductName())
                 .releaseDate(p.getReleaseDate())
                 .price(p.getPrice())
                 .available(p.isAvailable())

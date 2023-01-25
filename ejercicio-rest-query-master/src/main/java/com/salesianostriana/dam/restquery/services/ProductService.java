@@ -5,7 +5,6 @@ import com.salesianostriana.dam.restquery.dto.page.PageDto;
 import com.salesianostriana.dam.restquery.dto.product.ProductDto;
 import com.salesianostriana.dam.restquery.repository.ProductRepository;
 import com.salesianostriana.dam.restquery.search.specifications.PSBuilder;
-import com.salesianostriana.dam.restquery.search.specifications.ProductSpecification;
 import com.salesianostriana.dam.restquery.search.util.SearchCriteria;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

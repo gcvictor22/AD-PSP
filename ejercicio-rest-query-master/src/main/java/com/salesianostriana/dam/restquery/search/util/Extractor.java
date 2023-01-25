@@ -2,6 +2,7 @@ package com.salesianostriana.dam.restquery.search.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +22,10 @@ public interface Extractor {
             String operator = matcher.group(2);
             Object value = matcher.group(3);
 
-            params.add(new SearchCriteria(key, operator, value));
+            if (!Objects.equals(key, "id")){
+                params.add(new SearchCriteria(key, operator, value));
+            }
+
         }
 
         return params;

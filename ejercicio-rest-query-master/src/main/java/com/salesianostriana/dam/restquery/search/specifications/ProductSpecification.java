@@ -2,19 +2,20 @@ package com.salesianostriana.dam.restquery.search.specifications;
 
 import com.salesianostriana.dam.restquery.Product;
 import com.salesianostriana.dam.restquery.search.util.SearchCriteria;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Log
 @AllArgsConstructor
@@ -22,9 +23,9 @@ public class ProductSpecification implements Specification<Product> {
 
     private SearchCriteria searchCriteria;
 
+
     @Override
     public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-
         if (searchCriteria.getOperator().equalsIgnoreCase(">")){
             return criteriaBuilder.greaterThanOrEqualTo(
                     root.<String>get(searchCriteria.getKey()), searchCriteria.getValue().toString()
@@ -46,11 +47,16 @@ public class ProductSpecification implements Specification<Product> {
             return criteriaBuilder.lessThanOrEqualTo(root.get(searchCriteria.getKey()), searchCriteria.getValue().toString());
         } else if (searchCriteria.getOperator().equalsIgnoreCase(":")) {
             if (root.get(searchCriteria.getKey()).getJavaType() == String.class){
-                return criteriaBuilder.like(
-                        root.get(searchCriteria.getKey()), "%" + searchCriteria.getValue().toString() + "%"
-                );
+                if (searchCriteria.getValue().toString().charAt(0) == '*') {
+                    String newValue = searchCriteria.getValue().toString().substring(1);
+                    return criteriaBuilder.like(root.get(searchCriteria.getKey()), newValue + "%");
+                }else{
+                    return criteriaBuilder.like(
+                            root.get(searchCriteria.getKey()), "%" + searchCriteria.getValue().toString() + "%"
+                    );
+                }
             } else if (root.get(searchCriteria.getKey()).getJavaType().toString().equalsIgnoreCase("boolean")) {
-                boolean value = searchCriteria.getValue().toString().equalsIgnoreCase("true") ? true : false;
+                boolean value = searchCriteria.getValue().toString().equalsIgnoreCase("true");
                 return criteriaBuilder.equal(root.get(searchCriteria.getKey()), value);
             }else {
                 return criteriaBuilder.equal(root.<String>get(searchCriteria.getKey()), searchCriteria.getValue());

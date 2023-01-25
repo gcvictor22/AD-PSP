@@ -2,14 +2,14 @@
 package com.salesianostriana.dam.restquery.search.specifications;
 
 import com.salesianostriana.dam.restquery.search.util.SearchCriteria;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,7 +24,6 @@ public class GenericSpecification<T> implements Specification<T> {
 
     @Override
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-
         Class type = root.get(searchCriteria.getKey()).getJavaType();
         String key = searchCriteria.getKey();
         String operator = searchCriteria.getOperator();
@@ -42,9 +41,14 @@ public class GenericSpecification<T> implements Specification<T> {
             return criteriaBuilder.lessThanOrEqualTo(root.<String>get(key), value.toString());
         } else if (operator.equalsIgnoreCase(":")) {
             if (isString(type)){
-                return criteriaBuilder.like(
-                        root.get(searchCriteria.getKey()), "%" + searchCriteria.getValue().toString() + "%"
-                );
+                if (searchCriteria.getValue().toString().charAt(0) == '*') {
+                    String newValue = searchCriteria.getValue().toString().substring(1);
+                    return criteriaBuilder.like(root.get(searchCriteria.getKey()), newValue + "%");
+                }else {
+                    return criteriaBuilder.like(
+                            root.get(searchCriteria.getKey()), "%" + searchCriteria.getValue().toString() + "%"
+                    );
+                }
             } else if (isBooleam(type)) {
                 if (isValidBooleanValue(value.toString()))
                     return criteriaBuilder.equal(root.get(key), getBooleanValue(value.toString()));
@@ -58,7 +62,6 @@ public class GenericSpecification<T> implements Specification<T> {
         }
 
         return null;
-
     }
 
     private boolean isBooleam(Class cl){
@@ -109,4 +112,6 @@ public class GenericSpecification<T> implements Specification<T> {
         return (val.equalsIgnoreCase("true")) || val.equalsIgnoreCase("1")
                 || val.equalsIgnoreCase("false") || val.equalsIgnoreCase("0");
     }
+
+
 }
